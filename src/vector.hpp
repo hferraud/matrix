@@ -63,6 +63,42 @@ class Vector {
 
 	// METHODS
 
+	void add(Vector<K> const & operand) {
+		if (operand.get_size() != size_)
+			throw VectorException("Vector of different size");
+
+		foreach([&operand](K& element, size_t index) {
+			element += operand[index];
+		});
+	}
+
+	void sub(Vector<K> const & operand) {
+		if (operand.get_size() != size_)
+			throw VectorException("Vector of different size");
+
+		foreach([&operand](K& element, size_t index) {
+			element -= operand[index];
+		});
+	}
+
+	void scale(K const & scalar) {
+		foreach([&scalar](K& element) {
+			element *= scalar;
+		});
+	}
+
+	void foreach(void (*f)(K&)) {
+		for (size_t i = 0; i < size_; ++i) {
+			f(data_[i]);
+		}
+	}
+
+	void foreach(void (*f)(K&, size_t)) {
+		for (size_t i = 0; i < size_; ++i) {
+			f(data_[i], i);
+		}
+	}
+
 	Matrix<K> to_matrix() {
 		Matrix<K> matrix(size_, 1);
 
