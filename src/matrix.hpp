@@ -2,6 +2,7 @@
 #define MATRIX_MATRIX_HPP
 
 #include <iostream>
+#include <utility>
 
 #include "vector.hpp"
 
@@ -20,6 +21,9 @@ class Matrix {
 	K**		data_;
 
  public:
+
+	// CONSTRUCTORS
+
 	explicit Matrix(size_t row, size_t column) {
 		shape_.row = row;
 		shape_.column = column;
@@ -42,6 +46,8 @@ class Matrix {
 		}
 		delete[] data_;
 	}
+
+	// OPERATORS
 
 	Matrix<K>& operator=(Matrix<K> const & other) {
 		if (this == &other) {
@@ -72,9 +78,13 @@ class Matrix {
 		return data_[index];
 	}
 
+	// GETTERS
+
 	shape_t get_shape() const {
 		return shape_;
 	}
+
+	// METHODS
 
 	bool isSquare() const {
 		return (shape_.row == shape_.column);
@@ -92,13 +102,15 @@ class Matrix {
 		return vector;
 	}
 
+	// EXCEPTIONS
+
 	class MatrixException : public std::exception {
 	 private:
 		std::string error_message_;
 	 public:
-		explicit MatrixException(std::string const & message) : error_message_(message) {}
+		explicit MatrixException(std::string  message) : error_message_(std::move(message)) {}
 
-		const char *what() const noexcept override {
+		char const * what() const noexcept override {
 			return error_message_.c_str();
 		}
 	};

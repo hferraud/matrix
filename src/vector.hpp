@@ -2,6 +2,7 @@
 #define MATRIX_VECTOR_HPP
 
 #include <iostream>
+#include <utility>
 
 #include "matrix.hpp"
 
@@ -15,6 +16,9 @@ class Vector {
 	K*		data_;
 
  public:
+
+	// CONSTRUCTORS
+
 	explicit Vector(size_t size) : size_(size) {
 		data_ = new K[size];
 	}
@@ -27,6 +31,8 @@ class Vector {
 	~Vector() {
 		delete[] data_;
 	}
+
+	// OPERATORS
 
 	Vector<K>& operator=(Vector<K> const & other) {
 		if (this == &other) {
@@ -49,9 +55,13 @@ class Vector {
 		return data_[index];
 	}
 
+	// GETTERS
+
 	size_t get_size() const {
 		return size_;
 	}
+
+	// METHODS
 
 	Matrix<K> to_matrix() {
 		Matrix<K> matrix(size_, 1);
@@ -61,6 +71,19 @@ class Vector {
 		}
 		return matrix;
 	}
+
+	// EXCEPTIONS
+
+	class VectorException : public std::exception {
+	private:
+		std::string error_message_;
+	public:
+		explicit VectorException(std::string message) : error_message_(std::move(message)) {}
+
+		char const * what() const noexcept override {
+			return error_message_.c_str();
+		}
+	};
 };
 
 template <typename K>
