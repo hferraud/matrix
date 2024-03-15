@@ -25,13 +25,20 @@ class Vector {
 
 	// CONSTRUCTORS
 
-	explicit Vector(size_t size) : size_(size) {
+	explicit Vector(size_t size): size_(size) {
 		data_ = new K[size];
+		foreach([](K& element) {
+			element = 0;
+		});
 	}
 
 	Vector(Vector<K> const & other) {
 		data_ = nullptr;
 		*this = other;
+	}
+
+	Vector(std::initializer_list<K> entries): size_(entries.size()), data_(new K[size_]) {
+		std::copy(entries.begin(), entries.end(), data_);
 	}
 
 	~Vector() {
@@ -178,6 +185,16 @@ std::ostream& operator<<(std::ostream& os, const Vector<K>& vector) {
 		os << '[' << vector[i] << ']' << std::endl;
 	}
 	return os;
+}
+
+template <typename K>
+Vector<K> linear_combination(Vector<K>* vectors, K* scalars, size_t length) {
+	Vector<K> result(vectors[0].get_size());
+
+	for (size_t i = 0; i < length; ++i) {
+		result += vectors[i] * scalars[i];
+	}
+	return result;
 }
 
 #endif

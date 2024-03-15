@@ -12,4 +12,5 @@ add_executable(matrix
         src/tests/test_constraints.cpp
         src/tests/test.cpp
         src/tests/test_basic_arithmetic.cpp
+        src/tests/test_linear_combination.cpp
 )
