@@ -11,13 +11,17 @@ class Vector;
 
 template <class K>
 class Matrix {
-	typedef struct shape_s {
+	typedef struct dimension_s {
 		size_t row;
 		size_t column;
-	} shape_t;
+
+		bool operator==(struct dimension_s const & other) const {
+			return row == other.row && column == other.column;
+		}
+	} dimension_t;
 
  private:
-	shape_t	shape_;
+	dimension_t	dimension_;
 	K**		data_;
 
  public:
@@ -25,15 +29,15 @@ class Matrix {
 	// CONSTRUCTORS
 
 	explicit Matrix(size_t row, size_t column) {
-		shape_.row = row;
-		shape_.column = column;
+		dimension_.row = row;
+		dimension_.column = column;
 		data_ = new K*[row];
 		for (size_t i = 0; i < row; ++i) {
 			data_[i] = new K[column];
 		}
 	}
 
-	explicit Matrix(shape_t shape) : Matrix(shape.row, shape.column) {}
+	explicit Matrix(dimension_t dimension) : Matrix(dimension.row, dimension.column) {}
 
 	Matrix (Matrix<K> const & other) {
 		data_ = nullptr;
@@ -41,7 +45,7 @@ class Matrix {
 	}
 
 	~Matrix() {
-		for (size_t row = 0; row < shape_.row; ++row) {
+		for (size_t row = 0; row < dimension_.row; ++row) {
 			delete[] data_[row];
 		}
 		delete[] data_;
@@ -54,16 +58,16 @@ class Matrix {
 			return *this;
 		}
 		if (data_ != nullptr) {
-			for (size_t row = 0; row < shape_.row; ++row) {
+			for (size_t row = 0; row < dimension_.row; ++row) {
 				delete[] data_[row];
 			}
 			delete[] data_;
 		}
-		shape_ = other.shape_;
-		data_ = new K*[shape_.row];
-		for (size_t row = 0; row < shape_.row; ++row) {
-			data_[row] = new K[shape_.column];
-			for (size_t column = 0; column < shape_.column; ++column) {
+		dimension_ = other.dimension_;
+		data_ = new K*[dimension_.row];
+		for (size_t row = 0; row < dimension_.row; ++row) {
+			data_[row] = new K[dimension_.column];
+			for (size_t column = 0; column < dimension_.column; ++column) {
 				data_[row][column] = other[row][column];
 			}
 		}
@@ -80,23 +84,65 @@ class Matrix {
 
 	// GETTERS
 
-	shape_t get_shape() const {
-		return shape_;
+	dimension_t get_dimension() const {
+		return dimension_;
 	}
 
 	// METHODS
 
 	bool isSquare() const {
-		return (shape_.row == shape_.column);
+		return (dimension_.row == dimension_.column);
+	}
+
+	void add(Matrix<K> const & operand) {
+		if (operand.get_dimension() != dimension_) {
+			throw (MatrixException("Matrix of different dimension"));
+		}
+		foreach([&operand](K& element, size_t row, size_t column) {
+			element += operand[row][column];
+		});
+	}
+
+	void sub(Matrix<K> const & operand) {
+		if (operand.get_dimension() != dimension_) {
+			throw (MatrixException("Matrix of different dimension"));
+		}
+		foreach([&operand](K& element, size_t row, size_t column) {
+			element -= operand[row][column];
+		});
+	}
+
+	void scale(K const & scalar) {
+		foreach([&scalar](K& element) {
+			element *= scalar;
+		});
+	}
+
+	template <typename Function>
+	auto foreach(Function f) -> std::enable_if_t<std::is_invocable_v<Function, K&>> {
+		for (size_t row = 0; row < dimension_.row; ++row) {
+			for (size_t column = 0; column < dimension_.column; ++column) {
+				f(data_[row][column]);
+			}
+		}
+	}
+
+	template <typename Function>
+	auto foreach(Function f) -> std::enable_if_t<std::is_invocable_v<Function, K&, size_t&, size_t&>> {
+		for (size_t row = 0; row < dimension_.row; ++row) {
+			for (size_t column = 0; column < dimension_.column; ++column) {
+				f(data_[row][column], row, column);
+			}
+		}
 	}
 
 	Vector<K> to_vector() {
-		if (shape_.column != 1) {
+		if (dimension_.column != 1) {
 			throw MatrixException("Cannot convert to a vector");
 		}
-		Vector<K> vector(shape_.row);
+		Vector<K> vector(dimension_.row);
 
-		for (size_t row = 0; row < shape_.row; ++row) {
+		for (size_t row = 0; row < dimension_.row; ++row) {
 			vector[row] = data_[row][0];
 		}
 		return vector;
@@ -118,11 +164,11 @@ class Matrix {
 
 template <typename K>
 std::ostream& operator<<(std::ostream& os, const Matrix<K>& matrix) {
-	for (size_t row = 0; row < matrix.get_shape().row ; ++row) {
+	for (size_t row = 0; row < matrix.get_dimension().row ; ++row) {
 		os << '[';
-		for (size_t column = 0; column < matrix.get_shape().column; column++) {
+		for (size_t column = 0; column < matrix.get_dimension().column; column++) {
 			os << matrix[row][column] ;
-			if (column + 1 < matrix.get_shape().column) {
+			if (column + 1 < matrix.get_dimension().column) {
 				os << ", ";
 			}
 		}

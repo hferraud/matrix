@@ -87,13 +87,15 @@ class Vector {
 		});
 	}
 
-	void foreach(void (*f)(K&)) {
+	template <typename Function>
+	auto foreach(Function f) -> std::enable_if_t<std::is_invocable_v<Function, K&>> {
 		for (size_t i = 0; i < size_; ++i) {
 			f(data_[i]);
 		}
 	}
 
-	void foreach(void (*f)(K&, size_t)) {
+	template <typename Function>
+	auto foreach(Function f) -> std::enable_if_t<std::is_invocable_v<Function, K&, size_t&>> {
 		for (size_t i = 0; i < size_; ++i) {
 			f(data_[i], i);
 		}
