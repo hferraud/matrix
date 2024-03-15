@@ -13,6 +13,6 @@ void assert_throws(Function f) {
 
 void test();
 void test_constraints();
-void test_linear_combination();
+void test_basic_arithmetic();
 
 #endif

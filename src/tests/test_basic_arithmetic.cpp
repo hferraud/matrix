@@ -6,19 +6,19 @@
 #include "test.hpp"
 
 template<typename K>
-void test_linear_combination_vector();
+void test_basic_arithmetic_vector();
 template<typename K>
-void test_linear_combination_matrix();
+void test_basic_arithmetic_matrix();
 
-void test_linear_combination() {
-	test_linear_combination_vector<int>();
-	std::cout << "TEST_LINEAR_COMBINATION_VECTOR: SUCCESS" << std::endl;
-	test_linear_combination_matrix<int>();
-	std::cout << "TEST_LINEAR_COMBINATION_MATRIX: SUCCESS" << std::endl;
+void test_basic_arithmetic() {
+	test_basic_arithmetic_vector<int>();
+	std::cout << "TEST_BASIC_ARITHMETIC_VECTOR: SUCCESS" << std::endl;
+	test_basic_arithmetic_matrix<int>();
+	std::cout << "TEST_BASIC_ARITHMETIC_MATRIX: SUCCESS" << std::endl;
 }
 
 template<typename K>
-void test_linear_combination_vector() {
+void test_basic_arithmetic_vector() {
 	Vector<K> v1(3);
 	Vector<K> v2(3);
 	Vector<K> v3(4);
@@ -52,7 +52,7 @@ void test_linear_combination_vector() {
 }
 
 template<typename K>
-void test_linear_combination_matrix() {
+void test_basic_arithmetic_matrix() {
 	Matrix<K> m1(3, 3);
 	Matrix<K> m2(3, 3);
 	Matrix<K> m3(4, 4);

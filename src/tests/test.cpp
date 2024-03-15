@@ -4,5 +4,5 @@
 
 void test() {
 	test_constraints();
-	test_linear_combination();
+	test_basic_arithmetic();
 }
