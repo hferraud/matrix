@@ -15,6 +15,12 @@ class Vector {
 	size_t	size_;
 	K*		data_;
 
+	void assert_size_match(Vector<K> const & other) {
+		if (other.get_size() != size_) {
+			throw VectorException("Vector size mismatch");
+		}
+	}
+
  public:
 
 	// CONSTRUCTORS
@@ -51,8 +57,62 @@ class Vector {
 		return data_[index];
 	}
 
-	const K& operator[](size_t index) const {
+	K const & operator[](size_t index) const {
 		return data_[index];
+	}
+
+	Vector<K> operator+(Vector<K> const & rhs) const {
+		assert_size_match(rhs);
+		Vector<K> result(size_);
+
+		result.foreach([this, &rhs](K& element, size_t& i) {
+			element = (*this)[i] + rhs[i];
+		});
+		return result;
+	}
+
+	Vector<K> operator+=(Vector<K> const & rhs) {
+		assert_size_match(rhs);
+
+		foreach([&rhs](K& element, size_t& i) {
+			element += rhs[i];
+		});
+		return *this;
+	}
+
+	Vector<K> operator-(Vector<K> const & rhs) const {
+		assert_size_match(rhs);
+		Vector<K> result(size_);
+
+		result.foreach([this, &rhs](K& element, size_t& i) {
+			element = (*this)[i] - rhs[i];
+		});
+		return result;
+	}
+
+	Vector<K> operator-=(Vector<K> const & rhs) {
+		assert_size_match(rhs);
+
+		foreach([&rhs](K& element, size_t& i) {
+			element -= rhs[i];
+		});
+		return *this;
+	}
+
+	Vector<K> operator*(K const & scalar) const {
+		Vector<K> result(size_);
+
+		result.foreach([this, &scalar](K& element, size_t& i) {
+			element = (*this)[i] * scalar;
+		});
+		return result;
+	}
+
+	Vector<K> operator*=(K const & scalar) {
+		foreach([&scalar](K& element) {
+			element *= scalar;
+		});
+		return *this;
 	}
 
 	// GETTERS
@@ -64,27 +124,15 @@ class Vector {
 	// METHODS
 
 	void add(Vector<K> const & operand) {
-		if (operand.get_size() != size_)
-			throw VectorException("Vector of different size");
-
-		foreach([&operand](K& element, size_t index) {
-			element += operand[index];
-		});
+		*this += operand;
 	}
 
 	void sub(Vector<K> const & operand) {
-		if (operand.get_size() != size_)
-			throw VectorException("Vector of different size");
-
-		foreach([&operand](K& element, size_t index) {
-			element -= operand[index];
-		});
+		*this -= operand;
 	}
 
 	void scale(K const & scalar) {
-		foreach([&scalar](K& element) {
-			element *= scalar;
-		});
+		*this *= scalar;
 	}
 
 	template <typename Function>

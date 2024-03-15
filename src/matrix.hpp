@@ -24,6 +24,12 @@ class Matrix {
 	dimension_t	dimension_;
 	K**		data_;
 
+	void assert_dimension_match(Matrix<K> const & other) {
+		if (other.get_dimension() != dimension_) {
+			throw MatrixException("Matrix dimension mismatch");
+		}
+	}
+
  public:
 
 	// CONSTRUCTORS
@@ -78,8 +84,62 @@ class Matrix {
 		return data_[index];
 	}
 
-	const K* operator[](size_t index) const {
+	K const * operator[](size_t index) const {
 		return data_[index];
+	}
+
+	Matrix<K> operator+(Matrix<K> const & rhs) const {
+		assert_dimension_match(rhs);
+		Matrix<K> result(dimension_);
+
+		result.foreach([this, &rhs](K& element, size_t& row, size_t& column) {
+			element = (*this)[row][column] + rhs[row][column];
+		});
+		return result;
+	}
+
+	Matrix<K> operator+=(Matrix<K> const & rhs) {
+		assert_dimension_match(rhs);
+
+		foreach([&rhs](K& element, size_t& row, size_t& column) {
+			element += rhs[row][column];
+		});
+		return *this;
+	}
+
+	Matrix<K> operator-(Matrix<K> const & rhs) const {
+		assert_dimension_match(rhs);
+		Matrix<K> result(dimension_);
+
+		result.foreach([this, &rhs](K& element, size_t& row, size_t& column) {
+			element = (*this)[row][column] - rhs[row][column];
+		});
+		return result;
+	}
+
+	Matrix<K> operator-=(Matrix<K> const & rhs) {
+		assert_dimension_match(rhs);
+
+		foreach([&rhs](K& element, size_t& row, size_t& column) {
+			element -= rhs[row][column];
+		});
+		return *this;
+	}
+
+	Matrix<K> operator*(K const & scalar) const {
+		Matrix<K> result(dimension_);
+
+		result.foreach([this, &scalar](K& element, size_t& row, size_t& column) {
+			element = (*this)[row][column] * scalar;
+		});
+		return result;
+	}
+
+	Matrix<K> operator*=(K const & scalar) {
+		foreach([&scalar](K& element) {
+			element *= scalar;
+		});
+		return *this;
 	}
 
 	// GETTERS
@@ -95,27 +155,15 @@ class Matrix {
 	}
 
 	void add(Matrix<K> const & operand) {
-		if (operand.get_dimension() != dimension_) {
-			throw (MatrixException("Matrix of different dimension"));
-		}
-		foreach([&operand](K& element, size_t row, size_t column) {
-			element += operand[row][column];
-		});
+		*this += operand;
 	}
 
 	void sub(Matrix<K> const & operand) {
-		if (operand.get_dimension() != dimension_) {
-			throw (MatrixException("Matrix of different dimension"));
-		}
-		foreach([&operand](K& element, size_t row, size_t column) {
-			element -= operand[row][column];
-		});
+		*this -= operand;
 	}
 
 	void scale(K const & scalar) {
-		foreach([&scalar](K& element) {
-			element *= scalar;
-		});
+		*this *= scalar;
 	}
 
 	template <typename Function>
