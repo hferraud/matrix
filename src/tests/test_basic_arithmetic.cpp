@@ -12,8 +12,12 @@ void test_basic_arithmetic_matrix();
 
 void test_basic_arithmetic() {
 	test_basic_arithmetic_vector<int>();
+	test_basic_arithmetic_vector<float>();
+	test_basic_arithmetic_vector<double>();
 	std::cout << "TEST_BASIC_ARITHMETIC_VECTOR: SUCCESS" << std::endl;
 	test_basic_arithmetic_matrix<int>();
+	test_basic_arithmetic_vector<float>();
+	test_basic_arithmetic_vector<double>();
 	std::cout << "TEST_BASIC_ARITHMETIC_MATRIX: SUCCESS" << std::endl;
 }
 

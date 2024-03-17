@@ -11,12 +11,12 @@ BUILD_DIR	=		.build/
 #	FILES
 
 SRC			=		main.cpp	\
-					matrix.cpp	\
-					vector.cpp	\
 					tests/test.cpp \
 					tests/test_constraints.cpp \
 					tests/test_basic_arithmetic.cpp \
 					tests/test_linear_combination.cpp \
+					tests/test_linear_interpolation.cpp \
+
 
 OBJ			=		$(addprefix $(BUILD_DIR), $(SRC:.cpp=.o))
 
@@ -24,7 +24,9 @@ DEPS		=		$(addprefix $(BUILD_DIR), $(SRC:.cpp=.d))
 
 #	FLAGS
 
-CFLAGS		=		-Wall -Werror -Wextra -std=c++20 -g3
+#CXX			=		gcc
+
+CFLAGS		=		-Wall -Werror -Wextra -std=c++2a
 
 IFLAGS		=		-I $(INC_DIR)
 

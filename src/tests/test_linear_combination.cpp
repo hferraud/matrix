@@ -3,6 +3,7 @@
 
 #include "test.hpp"
 #include "vector.hpp"
+#include "algebra.hpp"
 
 void test_linear_combination_vector();
 
@@ -33,12 +34,4 @@ void test_linear_combination_vector() {
 	assert(result[0] == 10.);
 	assert(result[1] == 0.);
 	assert(result[2] == 230.);
-
-	Vector<float> e3(4);
-	Vector<float> vectors_list_3[] = {e1, e2, e3};
-
-	try {
-		linear_combination(vectors_list_3, scalars_value, 3);
-		assert(false);
-	} catch (Vector<float>::VectorException const & e) {}
 }

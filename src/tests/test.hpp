@@ -1,6 +1,8 @@
 #ifndef MATRIX_TEST_HPP
 #define MATRIX_TEST_HPP
 
+#include <stdexcept>
+
 template <typename Function>
 void assert_throws(Function f) {
 	try {
@@ -15,5 +17,6 @@ void test();
 void test_constraints();
 void test_basic_arithmetic();
 void test_linear_combination();
+void test_linear_interpolation();
 
 #endif

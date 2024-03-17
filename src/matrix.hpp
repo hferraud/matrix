@@ -18,13 +18,17 @@ class Matrix {
 		bool operator==(struct dimension_s const & other) const {
 			return row == other.row && column == other.column;
 		}
+
+		bool operator!=(struct dimension_s const & other) const {
+			return !(*this == other);
+		}
 	} dimension_t;
 
  private:
 	dimension_t	dimension_;
 	K**		data_;
 
-	void assert_dimension_match(Matrix<K> const & other) {
+	void assert_dimension_match(Matrix<K> const & other) const {
 		if (other.get_dimension() != dimension_) {
 			throw MatrixException("Matrix dimension mismatch");
 		}
@@ -48,6 +52,11 @@ class Matrix {
 	Matrix (Matrix<K> const & other) {
 		data_ = nullptr;
 		*this = other;
+	}
+
+	Matrix (std::initializer_list<std::initializer_list<K>> entries) {
+		data_ = nullptr;
+		*this = entries;
 	}
 
 	~Matrix() {
@@ -78,6 +87,37 @@ class Matrix {
 			}
 		}
 		return *this;
+	}
+
+	Matrix<K>& operator=(std::initializer_list<std::initializer_list<K>> entries) {
+		if (data_ != nullptr) {
+			for (size_t row = 0; row < dimension_.row; ++row) {
+				delete[] data_[row];
+			}
+			delete[] data_;
+		}
+		dimension_.row = entries.size();
+		dimension_.column = entries.begin()->size();
+		data_ = new K*[dimension_.row];
+		for (size_t i = 0; i < dimension_.row; ++i) {
+			data_[i] = new K[dimension_.column];
+			std::copy(
+					entries.begin()[i].begin(),
+					entries.begin()[i].end(),
+					data_[i]);
+		}
+		return *this;
+	}
+
+	bool operator==(Matrix<K> const & rhs) const {
+		for (size_t row = 0; row < rhs.dimension_.row; ++row) {
+			for (size_t column = 0; column < rhs.dimension_.column; ++column) {
+				if (data_[row][column] != rhs[row][column]) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	K* operator[](size_t index) {

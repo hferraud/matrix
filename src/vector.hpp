@@ -15,7 +15,7 @@ class Vector {
 	size_t	size_;
 	K*		data_;
 
-	void assert_size_match(Vector<K> const & other) {
+	void assert_size_match(Vector<K> const & other) const {
 		if (other.get_size() != size_) {
 			throw VectorException("Vector size mismatch");
 		}
@@ -37,8 +37,9 @@ class Vector {
 		*this = other;
 	}
 
-	Vector(std::initializer_list<K> entries): size_(entries.size()), data_(new K[size_]) {
-		std::copy(entries.begin(), entries.end(), data_);
+	Vector(std::initializer_list<K> entries) {
+		data_ = nullptr;
+		*this = entries;
 	}
 
 	~Vector() {
@@ -58,6 +59,24 @@ class Vector {
 			data_[i] = other[i];
 		}
 		return *this;
+	}
+
+	Vector<K>& operator=(std::initializer_list<K> entries) {
+		delete[] data_;
+		size_ = entries.size();
+		data_ = new K[size_];
+		std::copy(entries.begin(), entries.end(), data_);
+		return *this;
+	}
+
+	bool operator==(Vector<K> const & rhs) const {
+		assert_size_match(rhs);
+		for (size_t i = 0; i < size_; ++i) {
+			if (data_[i] != rhs[i]) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	K& operator[](size_t index) {
@@ -185,16 +204,6 @@ std::ostream& operator<<(std::ostream& os, const Vector<K>& vector) {
 		os << '[' << vector[i] << ']' << std::endl;
 	}
 	return os;
-}
-
-template <typename K>
-Vector<K> linear_combination(Vector<K>* vectors, K* scalars, size_t length) {
-	Vector<K> result(vectors[0].get_size());
-
-	for (size_t i = 0; i < length; ++i) {
-		result += vectors[i] * scalars[i];
-	}
-	return result;
 }
 
 #endif
