@@ -18,5 +18,6 @@ void test_constraints();
 void test_basic_arithmetic();
 void test_linear_combination();
 void test_linear_interpolation();
+void test_dot_product();
 
 #endif

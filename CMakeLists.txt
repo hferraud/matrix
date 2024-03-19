@@ -13,4 +13,5 @@ add_executable(matrix
         src/tests/test_linear_combination.cpp
         src/algebra.hpp
         src/tests/test_linear_interpolation.cpp
+        src/tests/test_dot_product.cpp
 )

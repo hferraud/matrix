@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <utility>
+#include <cmath>
 
 #include "matrix.hpp"
 
@@ -24,6 +25,8 @@ class Vector {
  public:
 
 	// CONSTRUCTORS
+
+	explicit Vector(): size_(0), data_(nullptr) {}
 
 	explicit Vector(size_t size): size_(size) {
 		data_ = new K[size];
@@ -159,6 +162,15 @@ class Vector {
 
 	void scale(K const & scalar) {
 		*this *= scalar;
+	}
+
+	K dot(Vector<K> const & v) {
+		float result = 0;
+
+		for (size_t i = 0; i < size_; ++i) {
+			result = std::fma(data_[i], v[i], result);
+		}
+		return result;
 	}
 
 	template <typename Function>

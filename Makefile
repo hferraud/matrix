@@ -16,6 +16,7 @@ SRC			=		main.cpp	\
 					tests/test_basic_arithmetic.cpp \
 					tests/test_linear_combination.cpp \
 					tests/test_linear_interpolation.cpp \
+					tests/test_dot_product.cpp \
 
 
 OBJ			=		$(addprefix $(BUILD_DIR), $(SRC:.cpp=.o))

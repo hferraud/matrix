@@ -5,4 +5,5 @@ void test() {
 	test_basic_arithmetic();
 	test_linear_combination();
 	test_linear_interpolation();
+	test_dot_product();
 }
