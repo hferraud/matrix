@@ -22,4 +22,19 @@ K lerp(K u, K v, float t) {
 	return u + (v - u) * t;
 }
 
+template <typename K>
+float angle_cos(Vector<K> const & v1, Vector<K> const & v2) {
+	return (v1.dot(v2) / (v1.norm() * v2.norm()));
+}
+
+template <typename K>
+Vector<K> cross_product(Vector<K> const & v1, Vector<K> const & v2) {
+	Vector<K> result(3);
+
+	result[0] = std::fma(v1[1], v2[2], -v1[2] * v2[1]);
+	result[1] = std::fma(v1[2], v2[0], -v1[0] * v2[2]);
+	result[2] = std::fma(v1[0], v2[1], -v1[1] * v2[0]);
+	return result;
+}
+
 #endif

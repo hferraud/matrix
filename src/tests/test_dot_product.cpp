@@ -26,4 +26,3 @@ void test_dot_product() {
 	assert(u.dot(u) == 35);
 	std::cout << "TEST_DOT_PRODUCT_VECTOR: SUCCESS" << std::endl;
 }
-

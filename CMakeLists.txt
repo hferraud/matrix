@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.24.2)
 project(matrix)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -14,4 +14,4 @@ add_executable(matrix
         src/algebra.hpp
         src/tests/test_linear_interpolation.cpp
         src/tests/test_dot_product.cpp
-)
+        src/tests/test_norm.cpp src/tests/test_cosine.cpp)

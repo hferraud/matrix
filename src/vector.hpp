@@ -164,11 +164,38 @@ class Vector {
 		*this *= scalar;
 	}
 
-	K dot(Vector<K> const & v) {
+	K dot(Vector<K> const & v) const {
 		float result = 0;
 
 		for (size_t i = 0; i < size_; ++i) {
 			result = std::fma(data_[i], v[i], result);
+		}
+		return result;
+	}
+
+    float norm() const {
+		float result = 0;
+
+		for (size_t i = 0; i < size_; ++i) {
+			result = std::fma(data_[i], data_[i], result);
+		}
+		return sqrtf(result);
+	}
+
+	float norm_1() const {
+		float result = 0;
+
+		for (size_t i = 0; i < size_; ++i) {
+			result += std::max(data_[i], -data_[i]);
+		}
+		return result;
+	}
+
+	float norm_inf() const {
+		float result = 0;
+
+		for (size_t i = 0; i < size_; ++i) {
+			result = std::fmax(std::fmax(data_[i], -data_[i]), result);
 		}
 		return result;
 	}

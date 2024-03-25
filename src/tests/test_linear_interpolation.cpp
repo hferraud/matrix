@@ -20,4 +20,3 @@ void test_linear_interpolation() {
 			0.5));
 	std::cout << "TEST_LINEAR_INTERPOLATION_VECTOR: SUCCESS" << std::endl;
 }
-
