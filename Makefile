@@ -20,6 +20,8 @@ SRC			=		main.cpp	\
 					tests/test_norm.cpp \
 					tests/test_cosine.cpp \
 					tests/test_cross_product.cpp \
+					tests/test_matrix_multiplication.cpp \
+					tests/test_trace.cpp \
 
 
 OBJ			=		$(addprefix $(BUILD_DIR), $(SRC:.cpp=.o))

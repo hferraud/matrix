@@ -14,4 +14,4 @@ add_executable(matrix
         src/algebra.hpp
         src/tests/test_linear_interpolation.cpp
         src/tests/test_dot_product.cpp
-        src/tests/test_norm.cpp src/tests/test_cosine.cpp)
+        src/tests/test_norm.cpp src/tests/test_cosine.cpp src/tests/test_matrix_multiplication.cpp)

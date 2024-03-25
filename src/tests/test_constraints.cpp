@@ -82,8 +82,8 @@ void test_constraints_matrix() {
 		m3[i][0] = m1[i][0];
 	}
 
-	assert(m1.isSquare());
-	assert(!m3.isSquare());
+	assert(m1.is_square());
+	assert(!m3.is_square());
 
 	Vector<int> v1 = m3.to_vector();
 

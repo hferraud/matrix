@@ -25,5 +25,7 @@ void test_dot_product();
 void test_norm();
 void test_cosine();
 void test_cross_product();
+void test_matrix_multiplication();
+void test_trace();
 
 #endif

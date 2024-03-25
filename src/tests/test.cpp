@@ -13,4 +13,6 @@ void test() {
 	test_norm();
 	test_cosine();
 	test_cross_product();
+	test_matrix_multiplication();
+	test_trace();
 }

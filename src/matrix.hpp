@@ -38,6 +38,11 @@ class Matrix {
 
 	// CONSTRUCTORS
 
+	explicit Matrix(): data_(nullptr) {
+		dimension_.row = 0;
+		dimension_.column = 0;
+	}
+
 	explicit Matrix(size_t row, size_t column) {
 		dimension_.row = row;
 		dimension_.column = column;
@@ -45,6 +50,9 @@ class Matrix {
 		for (size_t i = 0; i < row; ++i) {
 			data_[i] = new K[column];
 		}
+		foreach([](K& element) {
+			element = K();
+		});
 	}
 
 	explicit Matrix(dimension_t dimension) : Matrix(dimension.row, dimension.column) {}
@@ -182,6 +190,41 @@ class Matrix {
 		return *this;
 	}
 
+	Vector<K> operator*(Vector<K> const & lhs) const {
+		Vector<K> res(dimension_.row);
+
+		for (size_t row = 0; row < dimension_.row; ++row) {
+			for (size_t column = 0; column < dimension_.column; ++column) {
+				res[row] = std::fma(data_[row][column], lhs[column], res[row]);
+			}
+		}
+		return res;
+	}
+
+	Matrix<K> operator*(Matrix<K> const & lhs) const {
+		Matrix<K> res(dimension_.row, lhs.dimension_.column);
+
+		res.foreach([this, &lhs](K& element, size_t row, size_t column) {
+			for (size_t i = 0; i < this->dimension_.column; ++i) {
+				element = std::fma((*this)[row][i], lhs[i][column], element);
+			}
+		});
+		return res;
+	}
+
+	Matrix<K> operator*=(Matrix<K> const & lhs) {
+		if (!is_square()) {
+			throw (MatrixException("Invalid operation"));
+		}
+		Matrix<K> rhs(*this);
+		foreach([this, &rhs, &lhs](K& element, size_t row, size_t column) {
+			this[row][column] = 0;
+			for (size_t i = 0; i < this->dimension_.column; ++i) {
+				this[row][column] = std::fma(rhs[row][i], lhs[i][column], this[row][column]);
+			}
+		});
+	}
+
 	// GETTERS
 
 	dimension_t get_dimension() const {
@@ -190,7 +233,7 @@ class Matrix {
 
 	// METHODS
 
-	bool isSquare() const {
+	bool is_square() const {
 		return (dimension_.row == dimension_.column);
 	}
 
@@ -204,6 +247,23 @@ class Matrix {
 
 	void scale(K const & scalar) {
 		*this *= scalar;
+	}
+
+	Vector<K> mul_vec(Vector<K> operand) const {
+		return *this * operand;
+	}
+
+	Matrix<K> mul_mat(Matrix<K> operand) const {
+		return *this * operand;
+	}
+
+	K trace() const {
+		K result;
+
+		for (size_t i = 0; i < dimension_.column; ++i) {
+			result += data_[i][i];
+		}
+		return result;
 	}
 
 	template <typename Function>
