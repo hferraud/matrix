@@ -266,6 +266,15 @@ class Matrix {
 		return result;
 	}
 
+	Matrix<K> transpose() const {
+		Matrix<K> res(dimension_.column, dimension_.row);
+
+		res.foreach([this](K& element, size_t row, size_t column) {
+			element = (*this)[column][row];
+		});
+		return res;
+	}
+
 	template <typename Function>
 	auto foreach(Function f) -> std::enable_if_t<std::is_invocable_v<Function, K&>> {
 		for (size_t row = 0; row < dimension_.row; ++row) {

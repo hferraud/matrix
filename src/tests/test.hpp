@@ -27,5 +27,6 @@ void test_cosine();
 void test_cross_product();
 void test_matrix_multiplication();
 void test_trace();
+void test_transpose();
 
 #endif

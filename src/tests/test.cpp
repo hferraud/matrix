@@ -15,4 +15,5 @@ void test() {
 	test_cross_product();
 	test_matrix_multiplication();
 	test_trace();
+	test_transpose();
 }
