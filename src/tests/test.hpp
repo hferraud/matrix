@@ -28,5 +28,7 @@ void test_cross_product();
 void test_matrix_multiplication();
 void test_trace();
 void test_transpose();
+void test_row_echelon();
+void test_determinant();
 
 #endif

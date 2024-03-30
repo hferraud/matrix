@@ -275,6 +275,99 @@ class Matrix {
 		return res;
 	}
 
+	Matrix<K> row_echelon() const {
+		Matrix<K> res(*this);
+		size_t row = 0;
+		size_t pivot_row;
+
+		for (size_t column = 0; column < dimension_.column && row < dimension_.row; ++column) {
+			pivot_row = res.find_pivot_row(row, column);
+			if (res[pivot_row][column] == 0) {
+				continue;
+			}
+			res.normalize_pivot_row(pivot_row, column);
+			if (pivot_row != row) {
+				res.swap_rows(pivot_row, row);
+			}
+			res.reduce_rows(row, column);
+			++row;
+		}
+		return res;
+	}
+
+	K determinant() const {
+//		std::cout << "Matrix:" << std::endl << *this << std::endl;
+		if (dimension_.row == 1) {
+			return data_[0][0];
+		}
+		if (dimension_.row == 2) {
+			return det2();
+		}
+		K determinant = 0;
+		for (size_t column = 0; column < dimension_.column; ++column) {
+			determinant +=
+					((column % 2) ? -1: 1) *
+					data_[0][column] *
+					minor(0, column).determinant();
+		}
+//		std::cout << "det: " << determinant << std::endl;
+		return determinant;
+	}
+
+	K det2() const {
+		return (data_[0][0] * data_[1][1] - data_[1][0] * data_[0][1]);
+	}
+
+	Matrix<K> minor(size_t minor_row, size_t minor_column) const {
+		Matrix<K> res(dimension_.row - 1, dimension_.column - 1);
+		res.foreach([&minor_row, &minor_column, this](K& element, size_t row, size_t column) {
+			row = (row >= minor_row) ? row + 1 : row;
+			column = (column >= minor_column) ? column + 1 : column;
+			element = (*this)[row][column];
+		});
+		return res;
+	}
+
+	size_t find_pivot_row(size_t row, size_t column) const {
+		size_t pivot_index = row;
+		K pivot_abs_value = data_[row][column];
+		K current_abs_value;
+
+		for (size_t i = row + 1; i < dimension_.row; ++i) {
+			current_abs_value = data_[i][column];
+			current_abs_value = (current_abs_value > -current_abs_value) ?
+				current_abs_value : -current_abs_value;
+			if (current_abs_value > pivot_abs_value) {
+				pivot_index = i;
+				pivot_abs_value = current_abs_value;
+			}
+		}
+		return pivot_index;
+	}
+
+	void normalize_pivot_row(size_t row, size_t column) {
+		K divider = data_[row][column];
+		for (size_t i = column; i < dimension_.column; ++i) {
+			data_[row][i] /= divider;
+		}
+	}
+
+	void swap_rows(size_t row_1, size_t row_2) {
+		std::swap(data_[row_1], data_[row_2]);
+	}
+
+	void reduce_rows(size_t pivot_row, size_t pivot_column) {
+		for (size_t row = 0; row < dimension_.row; ++row) {
+			K factor = data_[row][pivot_column];
+			if (row == pivot_row) {
+				continue;
+			}
+			for (size_t column = 0; column < dimension_.column; ++column) {
+				data_[row][column] = std::fma(data_[pivot_row][column], -factor, data_[row][column]);
+			}
+		}
+	}
+
 	template <typename Function>
 	auto foreach(Function f) -> std::enable_if_t<std::is_invocable_v<Function, K&>> {
 		for (size_t row = 0; row < dimension_.row; ++row) {

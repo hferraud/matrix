@@ -19,5 +19,5 @@ void test_transpose() {
 	t = {{1, 4}, {2, 5}, {3, 6}};
 	assert(m.transpose() == t);
 
-	std::cout << "TEST_TRACE_MATRIX: SUCCESS" << std::endl;
+	std::cout << "TEST_TRANSPOSE_MATRIX: SUCCESS" << std::endl;
 }

@@ -23,6 +23,8 @@ SRC			=		main.cpp	\
 					tests/test_matrix_multiplication.cpp \
 					tests/test_trace.cpp \
 					tests/test_transpose.cpp \
+					tests/test_row_echelon.cpp \
+					tests/test_determinant.cpp \
 
 
 OBJ			=		$(addprefix $(BUILD_DIR), $(SRC:.cpp=.o))
@@ -33,7 +35,7 @@ DEPS		=		$(addprefix $(BUILD_DIR), $(SRC:.cpp=.d))
 
 #CXX			=		gcc
 
-CFLAGS		=		-Wall -Werror -Wextra -std=c++2a
+CFLAGS		=		-Wall -Werror -Wextra -std=c++2a -g3
 
 IFLAGS		=		-I $(INC_DIR)
 

@@ -16,4 +16,6 @@ void test() {
 	test_matrix_multiplication();
 	test_trace();
 	test_transpose();
+	test_row_echelon();
+	test_determinant();
 }
