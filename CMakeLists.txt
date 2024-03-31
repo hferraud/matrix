@@ -19,4 +19,6 @@ add_executable(matrix
         src/tests/test_transpose.cpp
         src/tests/test_row_echelon.cpp
         src/tests/test_trace.cpp
-        src/tests/test_determinant.cpp)
+        src/tests/test_determinant.cpp
+        src/tests/test_inverse.cpp
+        src/tests/test_rank.cpp)

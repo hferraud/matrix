@@ -6,6 +6,12 @@
 
 #include "vector.hpp"
 
+#define MATRIX_DIMENSION_MISMATCH	"Matrix dimension mismatch"
+#define MATRIX_INVALID_OPERATION	"Invalid operation"
+#define MATRIX_NOT_INVERTIBLE		"Matrix not invertible"
+#define MATRIX_CONVERSION_ERROR		"Matrix can not be converted"
+
+
 template <class K>
 class Vector;
 
@@ -30,7 +36,7 @@ class Matrix {
 
 	void assert_dimension_match(Matrix<K> const & other) const {
 		if (other.get_dimension() != dimension_) {
-			throw MatrixException("Matrix dimension mismatch");
+			throw MatrixException(MATRIX_DIMENSION_MISMATCH);
 		}
 	}
 
@@ -214,7 +220,7 @@ class Matrix {
 
 	Matrix<K> operator*=(Matrix<K> const & lhs) {
 		if (!is_square()) {
-			throw (MatrixException("Invalid operation"));
+			throw (MatrixException(MATRIX_INVALID_OPERATION));
 		}
 		Matrix<K> rhs(*this);
 		foreach([this, &rhs, &lhs](K& element, size_t row, size_t column) {
@@ -296,7 +302,6 @@ class Matrix {
 	}
 
 	K determinant() const {
-//		std::cout << "Matrix:" << std::endl << *this << std::endl;
 		if (dimension_.row == 1) {
 			return data_[0][0];
 		}
@@ -310,7 +315,6 @@ class Matrix {
 					data_[0][column] *
 					minor(0, column).determinant();
 		}
-//		std::cout << "det: " << determinant << std::endl;
 		return determinant;
 	}
 
@@ -368,6 +372,49 @@ class Matrix {
 		}
 	}
 
+	Matrix<K> inverse() const {
+		if (determinant() == 0) {
+			throw (MatrixException(MATRIX_NOT_INVERTIBLE));
+		}
+		Matrix<K> augmented = this->augment();
+		augmented = augmented.row_echelon();
+		Matrix<K> res(dimension_);
+		res.foreach([&augmented](K& element, size_t row, size_t column) {
+			element = augmented[row][column + augmented.dimension_.row];
+		});
+		return res;
+	}
+
+	Matrix<K> augment() const {
+		Matrix res(dimension_.row, dimension_.row * 2);
+
+		res.foreach([this](K& element, size_t row, size_t column) {
+			if (column >= dimension_.row) {
+				if (column == dimension_.row + row) {
+					element = 1;
+				}
+				return;
+			}
+			element = (*this)[row][column];
+		});
+		return res;
+	}
+
+	size_t rank() const {
+		Matrix<K> reduced = row_echelon();
+		size_t rank = 0;
+
+		for (size_t row = 0; row < dimension_.row; ++row) {
+			for (size_t column = 0; column < dimension_.column; ++column) {
+				if (reduced[row][column] != 0) {
+					++rank;
+					break;
+				}
+			}
+		}
+		return rank;
+	}
+
 	template <typename Function>
 	auto foreach(Function f) -> std::enable_if_t<std::is_invocable_v<Function, K&>> {
 		for (size_t row = 0; row < dimension_.row; ++row) {
@@ -388,7 +435,7 @@ class Matrix {
 
 	Vector<K> to_vector() {
 		if (dimension_.column != 1) {
-			throw MatrixException("Cannot convert to a vector");
+			throw MatrixException(MATRIX_CONVERSION_ERROR);
 		}
 		Vector<K> vector(dimension_.row);
 
@@ -396,6 +443,17 @@ class Matrix {
 			vector[row] = data_[row][0];
 		}
 		return vector;
+	}
+
+	static Matrix<K> projection(float fov, float ratio, float near, float far) {
+		Matrix<K> res(4, 4);
+
+		res[0][0] = 1 / ratio * tanf(fov / 2);
+		res[1][1] = 1 / tanf(fov / 2);
+		res[2][2] = (far + near) / (near - far);
+		res[2][3] = (2 * far * near) / (near - far);
+		res[3][2] = -1;
+		return res;
 	}
 
 	// EXCEPTIONS

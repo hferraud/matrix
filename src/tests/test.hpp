@@ -30,5 +30,7 @@ void test_trace();
 void test_transpose();
 void test_row_echelon();
 void test_determinant();
+void test_inverse();
+void test_rank();
 
 #endif

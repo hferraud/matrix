@@ -18,4 +18,6 @@ void test() {
 	test_transpose();
 	test_row_echelon();
 	test_determinant();
+	test_inverse();
+	test_rank();
 }

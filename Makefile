@@ -25,6 +25,8 @@ SRC			=		main.cpp	\
 					tests/test_transpose.cpp \
 					tests/test_row_echelon.cpp \
 					tests/test_determinant.cpp \
+					tests/test_inverse.cpp \
+					tests/test_rank.cpp \
 
 
 OBJ			=		$(addprefix $(BUILD_DIR), $(SRC:.cpp=.o))
